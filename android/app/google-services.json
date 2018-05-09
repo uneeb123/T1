@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "870122498615",
+    "firebase_url": "https://treasury-5ac15.firebaseio.com",
+    "project_id": "treasury-5ac15",
+    "storage_bucket": "treasury-5ac15.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:870122498615:android:f369edc9125a21c9",
+        "android_client_info": {
+          "package_name": "com.treasury"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "870122498615-jmuicbu313thjs9h8sta0c8in26kvr3e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.treasury",
+            "certificate_hash": "7592f8bb7e5f274e8f37d23137e03743d08b6c6f"
+          }
+        },
+        {
+          "client_id": "870122498615-73ev8mloq92u1bvohvabh8c54tfptjn9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVFAzIG76cEfN2ZJeWInFUnvFwSjMAMu8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "870122498615-73ev8mloq92u1bvohvabh8c54tfptjn9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
