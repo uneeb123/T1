@@ -1,32 +1,37 @@
+import PhoneNumberScreen from './PhoneNumberScreen';
+import SplashScreen from './SplashScreen';
+import HomeScreen from './HomeScreen';
+
 import React, { Component } from 'react';
+import { View } from 'react-native';
+
 import {
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+  StackNavigator,
+} from 'react-navigation';
+import { MessageBar, showMessage } from 'react-native-messages';
+
+const StackNav = StackNavigator(
+  {
+    Splash: { screen: SplashScreen },
+    Phone: { screen: PhoneNumberScreen },
+    Home: { screen: HomeScreen },
+  },
+  {
+    initialRouteName: 'Splash',
+    headerMode: 'none',
+    navigationOptions: {
+      headerVisible: false,
+    }
+  }
+);
 
 export default class App extends Component<{}> {
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
+      <View style={{ flex: 1 }}>
+        <StackNav/>
+        <MessageBar/>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-});
