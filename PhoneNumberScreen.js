@@ -42,6 +42,8 @@ export default class PhoneNumberScreen extends Component<{}> {
   }
 
   componentDidMount() {
+    const { navigate } = this.props.navigation;
+
     DeviceEventEmitter.addListener('codeSent', (e) => {
       console.log(e);
       this.setState({
@@ -65,6 +67,23 @@ export default class PhoneNumberScreen extends Component<{}> {
       this.setState({ spinner: false });
       setTimeout(() => {
         Alert.alert('Success!', 'You have successfully verified your phone number');
+      }, 100);
+      
+      // FIXME Currently disabled because functionality is mocked
+      // await AsyncStorage.getItem('number');
+      navigate('Home');
+    });
+
+    DeviceEventEmitter.addListener('retry', (e) => {
+      console.log(e);
+
+      this.refs.form.refs.textInput.blur();
+      this.setState({
+        spinner: false,
+        enterCode: false,
+      });
+      setTimeout(() => {
+        Alert.alert('Failed!', 'Verification code incorrect');
       }, 100);
     });
   }

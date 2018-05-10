@@ -55,7 +55,16 @@ public class PhoneVerification extends ReactContextBaseJavaModule {
     @ReactMethod
     public void verifyCode(String code, Promise promise) {
         try {
-            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
+            // temporary workaround
+            if (code.equals("123456")) {
+                triggerVerificationComplete();
+            }
+            else {
+                triggerRetry();
+            }
+            // FIXME the firephase callbacks are not being called
+            // PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
+            // signInWithPhoneAuthCredential(credential);
             promise.resolve(null);
         } catch(Exception e) {
             promise.reject(e);
@@ -87,6 +96,14 @@ public class PhoneVerification extends ReactContextBaseJavaModule {
     // TODO: handle event
     private void triggerQuotaExceeded() {
         sendEvent("quotaExceeded", null);
+    }
+
+    private void triggerVerificationComplete() {
+        sendEvent("codeVerified", null);
+    }
+
+    private void triggerRetry() {
+        sendEvent("retry", null);
     }
 
     private void registerCallbacks() {
@@ -124,12 +141,20 @@ public class PhoneVerification extends ReactContextBaseJavaModule {
 
     private void startPhoneNumberVerification() {
         String constructedNumber = constructNumber(mCallingCode, mPhoneNumber);
+        // temporary workaround
+        triggerVerificationCode();
+
+        // FIXME the firebase phone provider callbacks are not being called
+        /*
+
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 constructedNumber,              // Phone number to verify
                 60,                          // Timeout duration
                 TimeUnit.SECONDS,               // Unit of timeout
                 getCurrentActivity(),           // Activity (for callback binding)
                 mCallbacks);                    // OnVerificationStateChangedCallbacks
+
+        */
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
@@ -142,7 +167,7 @@ public class PhoneVerification extends ReactContextBaseJavaModule {
                             Log.d(TAG, "signInWithCredential:success");
 
                             FirebaseUser user = task.getResult().getUser();
-                            show("Success");
+                            triggerVerificationComplete();
                             // ...
                         } else {
                             // Sign in failed, display a message and update the UI
@@ -150,7 +175,7 @@ public class PhoneVerification extends ReactContextBaseJavaModule {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 // The verification code entered was invalid
                             }
-                            show("Failure");
+                            triggerRetry();
                         }
                     }
                 });
