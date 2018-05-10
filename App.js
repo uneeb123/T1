@@ -3,7 +3,7 @@ import SplashScreen from './SplashScreen';
 import HomeScreen from './HomeScreen';
 
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import {
   StackNavigator,
@@ -28,10 +28,17 @@ const StackNav = StackNavigator(
 export default class App extends Component<{}> {
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.overall}>
         <StackNav/>
         <MessageBar/>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  overall: {
+    flex: 1,
+    backgroundColor: '#000000',
+  }
+});

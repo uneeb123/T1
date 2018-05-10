@@ -9,21 +9,15 @@ import {
   View,
   Platform,
   Alert,
-  AsyncStorage
+  AsyncStorage,
+  DeviceEventEmitter
 } from 'react-native';
 
-import Frisbee from 'frisbee';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Form from 'react-native-form';
 import CountryPicker from 'react-native-country-picker-modal';
 
-const api = new Frisbee({
-  baseURI: 'http://localhost:3000',
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  }
-});
+import PhoneVerification from './PhoneVerification';
 
 const MAX_LENGTH_CODE = 6;
 const MAX_LENGTH_NUMBER = 20;
@@ -32,7 +26,7 @@ const MAX_LENGTH_NUMBER = 20;
 const countryPickerCustomStyles = {};
 
 // your brand's theme primary color
-const brandColor = '#A4DDED';
+const brandColor = '#FFDF00';
 
 export default class PhoneNumberScreen extends Component<{}> {
   constructor(props) {
@@ -47,47 +41,41 @@ export default class PhoneNumberScreen extends Component<{}> {
     };
   }
 
-  _getCode = () => {
+  componentDidMount() {
+    DeviceEventEmitter.addListener('codeSent', (e) => {
+      console.log(e);
+      this.setState({
+        spinner: false,
+        enterCode: true,
+      });
+      this.refs.form.refs.textInput.setNativeProps({ text: '' });
 
+      setTimeout(() => {
+        Alert.alert('Sent!', "We've sent you a verification code", [{
+          text: 'OK',
+          onPress: () => this.refs.form.refs.textInput.focus()
+        }]);
+      }, 100);
+    });
+  }
+
+  _getCode = () => {
     this.setState({ spinner: true });
 
     setTimeout(async () => {
 
-      try {
+      console.log(this.refs.form.getValues());
+      number = this.refs.form.getValues().phoneNumber;
+      // TODO: validate(number);
 
-        const res = await api.post('/v1/verifications', {
-          body: {
-            ...this.refs.form.getValues(),
-            ...this.state.country
-          }
-        });
-
-        if (res.err) throw res.err;
-
-        this.setState({
-          spinner: false,
-          enterCode: true,
-          verification: res.body
-        });
-        this.refs.form.refs.textInput.setNativeProps({ text: '' });
-
-        setTimeout(() => {
-          Alert.alert('Sent!', "We've sent you a verification code", [{
-            text: 'OK',
-            onPress: () => this.refs.form.refs.textInput.focus()
-          }]);
-        }, 100);
-
-      } catch (err) {
-        // <https://github.com/niftylettuce/react-native-loading-spinner-overlay/issues/30#issuecomment-276845098>
+      PhoneVerification.sendCode(number).catch((e) => {
+        console.error(e);
         this.setState({ spinner: false });
         setTimeout(() => {
-          Alert.alert('Oops!', err.message);
+          Alert.alert('Oops!', e.message);
         }, 100);
-      }
-
+      });
     }, 100);
-
   }
 
   _verifyCode = () => {
@@ -97,14 +85,8 @@ export default class PhoneNumberScreen extends Component<{}> {
     setTimeout(async () => {
 
       try {
-
-        const res = await api.put('/v1/verifications', {
-          body: {
-            ...this.refs.form.getValues(),
-            ...this.state.country
-          }
-        });
-
+        // verify stuff
+        PhoneVerification.show('works!');
         if (res.err) throw res.err;
 
         this.refs.form.refs.textInput.blur();
@@ -236,6 +218,7 @@ export default class PhoneNumberScreen extends Component<{}> {
       onChangeText={this._onChangeText}
       placeholder={this.state.enterCode ? '_ _ _ _ _ _' : 'Phone Number'}
       keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
+      keyboardAppearance={'dark'}
       style={[ styles.textInput, textStyle ]}
       returnKeyType='go'
       autoFocus
@@ -271,7 +254,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#040404',
   },
   header: {
     textAlign: 'center',
