@@ -57,6 +57,16 @@ export default class PhoneNumberScreen extends Component<{}> {
         }]);
       }, 100);
     });
+
+    DeviceEventEmitter.addListener('codeVerified', (e) => {
+      console.log(e);
+
+      this.refs.form.refs.textInput.blur();
+      this.setState({ spinner: false });
+      setTimeout(() => {
+        Alert.alert('Success!', 'You have successfully verified your phone number');
+      }, 100);
+    });
   }
 
   _getCode = () => {
@@ -64,11 +74,11 @@ export default class PhoneNumberScreen extends Component<{}> {
 
     setTimeout(async () => {
 
-      console.log(this.refs.form.getValues());
       number = this.refs.form.getValues().phoneNumber;
-      // TODO: validate(number);
+      callingCode = this.state.country.callingCode;
+      // TODO: validate number
 
-      PhoneVerification.sendCode(number).catch((e) => {
+      PhoneVerification.sendCode(callingCode, number).catch((e) => {
         console.error(e);
         this.setState({ spinner: false });
         setTimeout(() => {
@@ -79,33 +89,20 @@ export default class PhoneNumberScreen extends Component<{}> {
   }
 
   _verifyCode = () => {
-
     this.setState({ spinner: true });
 
     setTimeout(async () => {
 
-      try {
-        // verify stuff
-        PhoneVerification.show('works!');
-        if (res.err) throw res.err;
+      code = this.refs.form.getValues().code;
+      // TODO: validate code
 
-        this.refs.form.refs.textInput.blur();
-        // <https://github.com/niftylettuce/react-native-loading-spinner-overlay/issues/30#issuecomment-276845098>
+      PhoneVerification.verifyCode(code).catch((e) => {
         this.setState({ spinner: false });
         setTimeout(() => {
-          Alert.alert('Success!', 'You have successfully verified your phone number');
+          Alert.alert('Oops!', e.message);
         }, 100);
-
-      } catch (err) {
-        // <https://github.com/niftylettuce/react-native-loading-spinner-overlay/issues/30#issuecomment-276845098>
-        this.setState({ spinner: false });
-        setTimeout(() => {
-          Alert.alert('Oops!', err.message);
-        }, 100);
-      }
-
+      });
     }, 100);
-
   }
 
   _onChangeText = (val) => {
