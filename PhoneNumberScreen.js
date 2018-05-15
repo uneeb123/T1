@@ -29,6 +29,10 @@ const countryPickerCustomStyles = {};
 const brandColor = '#FFDF00';
 
 export default class PhoneNumberScreen extends Component<{}> {
+  static navigationOptions = {
+    header: null,
+  }
+
   constructor(props) {
     super(props);
     this.state = {

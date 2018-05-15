@@ -18,10 +18,6 @@ const StackNav = StackNavigator(
   },
   {
     initialRouteName: 'Splash',
-    headerMode: 'none',
-    navigationOptions: {
-      headerVisible: false,
-    }
   }
 );
 
@@ -39,6 +35,5 @@ export default class App extends Component<{}> {
 const styles = StyleSheet.create({
   overall: {
     flex: 1,
-    backgroundColor: '#000000',
   }
 });

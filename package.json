@@ -9,7 +9,7 @@
   "dependencies": {
     "frisbee": "^1.6.4",
     "react": "16.3.1",
-    "react-native": "0.55.3",
+    "react-native": "0.55.4",
     "react-native-country-picker-modal": "^0.5.1",
     "react-native-form": "^2.1.2",
     "react-native-loading-spinner-overlay": "^0.5.2",
