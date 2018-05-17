@@ -6,6 +6,8 @@ import {
   AsyncStorage,
 } from 'react-native';
 
+import TreasuryModel from './Model/TreasuryModel';
+
 export default class SplashScreen extends Component<{}> {
   static navigationOptions = {
     header: null,
@@ -25,15 +27,15 @@ export default class SplashScreen extends Component<{}> {
 
   async _fetchNumber() {
     const { navigate } = this.props.navigation;
-    var number = await AsyncStorage.getItem('number');
-    if (number == null) {
-      // navigate to phone page
-      navigate('Phone');
-    }
-    else {
-      // navigate to home page
-      navigate('Home');
-    }
+    TreasuryModel.userSaved().then((saved) => {
+      if (saved) {
+        navigate('Home');
+      } else {
+        navigate('Phone');
+      }
+    }, (e) => {
+      console.log(e);
+    });
   }
 }
 
