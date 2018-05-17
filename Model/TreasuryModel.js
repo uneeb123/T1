@@ -15,7 +15,7 @@ export default class TreasuryModel {
    */
   userSaved() {
     return new Promise((resolve, reject) => {
-      AsyncStorage.get('userId').then((id) => {
+      AsyncStorage.getItem('userId').then((id) => {
         if (id == null) {
           resolve(false);
         }
@@ -34,9 +34,9 @@ export default class TreasuryModel {
    */
   getUser() {
     return new Promise((resolve, reject) => {
-      AsyncStorage.get('userId').then((id) => {
+      AsyncStorage.getItem('userId').then((id) => {
         if (id == null) {
-          reject(new Error('user not saved');
+          reject(new Error('user not saved'));
         } else {
           this.getUserDetails(id).then((user) => {
             resolve(user);
@@ -213,10 +213,10 @@ export default class TreasuryModel {
   createTreasury(invitedMembers, treasurer, creator, limit) {
     return new Promise((resolve, reject) => {
       body = {
-        invited_members = invitedMembers,
-        treasurer = treasurer,
-        creator = creator,
-        limit = limit,
+        invited_members: invitedMembers,
+        treasurer: treasurer,
+        creator: creator,
+        limit: limit,
       };
       fetch(treasuryUrl, {
         method: 'POST',

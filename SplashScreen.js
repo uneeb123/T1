@@ -12,6 +12,11 @@ export default class SplashScreen extends Component<{}> {
   static navigationOptions = {
     header: null,
   }
+
+  constructor() {
+    super();
+    this.model = new TreasuryModel();
+  }
   
   render() {
     return (
@@ -27,7 +32,7 @@ export default class SplashScreen extends Component<{}> {
 
   async _fetchNumber() {
     const { navigate } = this.props.navigation;
-    TreasuryModel.userSaved().then((saved) => {
+    this.model.userSaved().then((saved) => {
       if (saved) {
         navigate('Home');
       } else {

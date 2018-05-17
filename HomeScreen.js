@@ -15,11 +15,13 @@ export default class HomeScreen extends Component<{}> {
   }
 
   constructor() {
+    super();
     TreasuryModel.getDetailsInformation().then((details) => {
       this.state = {
         user: details.user,
         treasuries: details.treasuries,
       };
+      console.log(details.user);
     }, (e) => {
       console.log(e);
     });
