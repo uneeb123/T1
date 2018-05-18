@@ -87,7 +87,7 @@ export default class TreasuryModel {
   getDetailedInformation() {
     return new Promise((resolve, reject) => {
       this.getUser().then((user) => {
-        this.getUserTreasuries(user._id_).then((treasuries) => {
+        this.getUserTreasuries(user._id).then((treasuries) => {
           var result = {
             user: user,
             treasuries: treasuries
@@ -131,7 +131,7 @@ export default class TreasuryModel {
                   readyTreasuries.push(treasury);
                   eachTreasury(i+1, that);
                 } else {
-                  pendingTreasuries(treasury);
+                  pendingTreasuries.push(treasury);
                   eachTreasury(i+1, that);
                 }
               }, (e) => {
@@ -139,7 +139,7 @@ export default class TreasuryModel {
               });
             } else {
               that.getTreasuryDetails(treasuryId).then((treasury) => {
-                invitedTreasuries(treasury);
+                invitedTreasuries.push(treasury);
                 eachTreasury(i+1, that);
               }, (e) => {
                 reject(e);

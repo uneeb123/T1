@@ -4,7 +4,10 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
-import Treasury from './Components/Treasury';
+import ReadyTreasuries from './Components/ReadyTreasuries';
+import InvitedTreasuries from './Components/InvitedTreasuries';
+import PendingTreasuries from './Components/PendingTreasuries';
+
 import Container from './Components/Container';
 
 import TreasuryModel from './Model/TreasuryModel';
@@ -12,27 +15,48 @@ import TreasuryModel from './Model/TreasuryModel';
 export default class HomeScreen extends Component<{}> {
   static navigationOptions = {
     title: 'Treasury',
+    header: null,
   }
+
+  state = {
+    ready: false,
+    user: null,
+    treasuries: null,
+  };
 
   constructor() {
     super();
     this.model = new TreasuryModel();
     this.model.getDetailedInformation().then((details) => {
-      this.state = {
+      this.setState({
+        ready: true,
         user: details.user,
         treasuries: details.treasuries,
-      };
-      console.log(details.user);
+      });
     }, (e) => {
       console.log(e);
     });
   }
   
   render() {
+    let ready_treasuries = [];
+    let invited_treasuries = [];
+    let pending_treasuries = [];
+    let ready = this.state.ready;
+    if (ready) {
+      ready_treasuries = this.state.treasuries.ready_treasuries;
+      invited_treasuries = this.state.treasuries.invited_treasuries;
+      pending_treasuries = this.state.treasuries.pending_treasuries;
+    }
+
     return (
       <Container>
-        <Text style={styles.test}>Hello World!</Text>
-        <Treasury />
+        <Text style={styles.test}>Ready Treasuries</Text>
+        <ReadyTreasuries list={ready_treasuries} />
+        <Text style={styles.test}>Invited Treasuries</Text>
+        <InvitedTreasuries list={invited_treasuries} />
+        <Text style={styles.test}>Pending Treasuries</Text>
+        <PendingTreasuries list={pending_treasuries} />
       </Container>
     );
   }
