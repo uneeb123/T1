@@ -15,7 +15,7 @@ export default class ReadyTreasuries extends Component<{}> {
     return (
       <FlatList
         data={this.props.list}
-        renderItem={({item}) => <Treasury treasury={item} />}
+        renderItem={({item}) => <Treasury treasury={item} ready={true} />}
         keyExtractor={(item) => item._id}
       />
     );

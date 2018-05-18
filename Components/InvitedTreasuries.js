@@ -15,7 +15,7 @@ export default class InvitedTreasuries extends Component<{}> {
     return (
       <FlatList
         data={this.props.list}
-        renderItem={({item}) => <Treasury treasury={item} />}
+        renderItem={({item}) => <Treasury treasury={item} invited={true} />}
         keyExtractor={(item) => item._id}
       />
     );
