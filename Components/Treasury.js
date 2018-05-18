@@ -6,10 +6,11 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { withNavigation } from 'react-navigation';
 
 import TreasuryModel from '../Model/TreasuryModel';
 
-export default class Treasury extends Component<{}> {
+class Treasury extends Component<{}> {
   state = {
     creator: null,
   }
@@ -23,6 +24,15 @@ export default class Treasury extends Component<{}> {
       this.setState({
         creator: creator.phone_number,
       });
+    }, (e) => {
+      console.log(e);
+    });
+    this.model.getUser().then((me) => {
+      if (me._id == this.props.treasury.treasurer) {
+        this.setState({
+          treasurer: true,
+        });
+      }
     }, (e) => {
       console.log(e);
     });
@@ -49,7 +59,12 @@ export default class Treasury extends Component<{}> {
         { cancelable: false }
       );
     } else if (this.ready) {
-      Alert.alert("Treasury ready");
+      const { navigate } = this.props.navigation;
+      if (this.state.treasurer) {
+        navigate('Treasurer');
+      } else {
+        navigate('Member');
+      }
     } else {
       Alert.alert("You clicked something wrong");
     }
@@ -68,6 +83,8 @@ export default class Treasury extends Component<{}> {
     );
   }
 }
+
+export default withNavigation(Treasury);
 
 const styles = StyleSheet.create({
   treasuryContainer: {
