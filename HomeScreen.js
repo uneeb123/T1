@@ -16,7 +16,8 @@ export default class HomeScreen extends Component<{}> {
 
   constructor() {
     super();
-    TreasuryModel.getDetailsInformation().then((details) => {
+    this.model = new TreasuryModel();
+    this.model.getDetailedInformation().then((details) => {
       this.state = {
         user: details.user,
         treasuries: details.treasuries,

@@ -4,7 +4,8 @@ import {
 
 export default class TreasuryModel {
   constructor() {
-    this.baseUrl = "http://treasury.addr.company/";
+    this.baseUrl = "http://10.0.2.2:3000/"
+    // this.baseUrl = "http://treasury.addr.company/";
     this.memberUrl = this.baseUrl + "member/"
     this.treasuryUrl = this.baseUrl + "treasury/"
   }
@@ -60,7 +61,7 @@ export default class TreasuryModel {
       body = {
         phone_number: phoneNumber,
       };
-      fetch(memberUrl, {
+      fetch(this.memberUrl, {
         method: 'POST',
         body: JSON.stringify(body),
         headers: { 'Content-Type': 'application/json'}
@@ -84,18 +85,20 @@ export default class TreasuryModel {
    * @returns {Promise} object containing member information and his treasuries
    */
   getDetailedInformation() {
-    this.getUser().then((user) => {
-      this.getUserTreasuries(user._id_).then((treasuries) => {
-        var result = {
-          user: user,
-          treasuries: treasuries
-        };
-        resolve(result);
+    return new Promise((resolve, reject) => {
+      this.getUser().then((user) => {
+        this.getUserTreasuries(user._id_).then((treasuries) => {
+          var result = {
+            user: user,
+            treasuries: treasuries
+          };
+          resolve(result);
+        }, (e) => {
+          reject(e);
+        });
       }, (e) => {
         reject(e);
       });
-    }, (e) => {
-      reject(e);
     });
   }
 
@@ -156,7 +159,7 @@ export default class TreasuryModel {
    */
   getUserDetails(userId) {
     return new Promise((resolve, reject) => {
-      fetch(memberUrl + userId).then((response) => {
+      fetch(this.memberUrl + userId).then((response) => {
         response.json().then((json) => {
           resolve(json);
         }, (e) => {
@@ -175,7 +178,7 @@ export default class TreasuryModel {
    */
   getTreasuryDetails(treasuryId) {
     return new Promise((resolve, reject) => {
-      fetch(treasuryUrl + treasuryId).then((response) => {
+      fetch(this.treasuryUrl + treasuryId).then((response) => {
         response.json().then((json) => {
           resolve(json);
         }, (e) => {
@@ -218,7 +221,7 @@ export default class TreasuryModel {
         creator: creator,
         limit: limit,
       };
-      fetch(treasuryUrl, {
+      fetch(this.treasuryUrl, {
         method: 'POST',
         body: JSON.stringify(body),
         headers: { 'Content-Type': 'application/json'}

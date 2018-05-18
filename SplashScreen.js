@@ -27,7 +27,14 @@ export default class SplashScreen extends Component<{}> {
   }
 
   componentDidMount() {
-    this._fetchNumber();
+    this._removeThis();
+    // this._fetchNumber();
+  }
+
+  _removeThis() {
+    AsyncStorage.setItem('userId', 'ecdc8326-27ca-471a-9f4c-60c1fdd82e46', () => {
+      this._fetchNumber();
+    });
   }
 
   async _fetchNumber() {
