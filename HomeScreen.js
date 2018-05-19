@@ -51,11 +51,17 @@ export default class HomeScreen extends Component<{}> {
 
     return (
       <Container>
-        <Text style={styles.test}>Ready Treasuries</Text>
+        <View style={styles.heading}>
+          <Text style={styles.test}>Ready Treasuries</Text>
+        </View>
         <ReadyTreasuries list={ready_treasuries} />
-        <Text style={styles.test}>Invited Treasuries</Text>
+        <View style={styles.heading}>
+          <Text style={styles.test}>Invited Treasuries</Text>
+        </View>
         <InvitedTreasuries list={invited_treasuries} />
-        <Text style={styles.test}>Pending Treasuries</Text>
+        <View style={styles.heading}>
+          <Text style={styles.test}>Pending Treasuries</Text>
+        </View>
         <PendingTreasuries list={pending_treasuries} />
       </Container>
     );
@@ -63,10 +69,11 @@ export default class HomeScreen extends Component<{}> {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   test: {
     color: 'white',
+    fontWeight: 'bold',
+  },
+  heading: {
+    margin: 20,
   }
 });

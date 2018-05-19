@@ -89,16 +89,13 @@ export default withNavigation(Treasury);
 const styles = StyleSheet.create({
   treasuryContainer: {
     margin: 20,
-    padding: 20,
-    backgroundColor: '#333300',
-    height: 100,
-  },
-  title: {
-    color: 'white',
-    fontSize: 30,
+    padding: 10,
+    backgroundColor: 'rgba(255,215,0, 0.9)',
+    height: 60,
+    borderRadius: 10,
   },
   test: {
-    color: 'white',
+    color: '#FFF',
   },
   id: {
     fontSize: 10,
