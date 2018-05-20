@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
   },
   amount: {
-    fontWeight: 'bold',
     fontSize: 18,
   }
 });
