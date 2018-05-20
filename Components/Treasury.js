@@ -61,9 +61,13 @@ class Treasury extends Component<{}> {
     } else if (this.ready) {
       const { navigate } = this.props.navigation;
       if (this.state.treasurer) {
-        navigate('Treasurer');
+        navigate('Treasurer', {
+          treasury: this.props.treasury
+        });
       } else {
-        navigate('Member');
+        navigate('Member', {
+          treasury: this.props.treasury
+        });
       }
     } else {
       Alert.alert("You clicked something wrong");
@@ -74,11 +78,9 @@ class Treasury extends Component<{}> {
     let creator = this.state.creator;
 
     return (
-      <TouchableOpacity onPress={this._handleEvent}>
-        <View style={styles.treasuryContainer}>
-          <Text style={styles.id}>{this.props.treasury._id}</Text>
-          <Text style={styles.test}>created by: {creator}</Text>
-        </View>
+      <TouchableOpacity onPress={this._handleEvent} style={styles.treasuryContainer}>
+        <Text style={styles.id}>{this.props.treasury._id}</Text>
+        <Text style={styles.test}>created by: {creator}</Text>
       </TouchableOpacity>
     );
   }
@@ -91,7 +93,6 @@ const styles = StyleSheet.create({
     margin: 20,
     padding: 10,
     backgroundColor: 'rgba(255,215,0, 0.9)',
-    height: 60,
     borderRadius: 10,
   },
   test: {
