@@ -6,13 +6,28 @@ import {
   StyleSheet,
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 class Panel extends Component<{}> {
   render() {
+    let positive = (<Icon name="chevron-up" size={30} color='green' />);
+    let negative = (<Icon name="chevron-down" size={30} color='red' />);
+    let direction = positive;
+    if (this.props.amount < 0) {
+      direction = negative;
+    }
+
+    let destination = (<Text style={styles.address}>{this.props.address}</Text>);
+    if (this.props.address == 0) {
+      destination = (<Text>--</Text>);
+    }
+
     return (
       <View style={styles.panelContainer}>
-        <Text style={styles.text}>{this.props.amount}</Text>
-        <Text style={styles.text}>{this.props.address}</Text>
-        <Text style={styles.text}>{new Date(this.props.date).toDateString()}</Text>
+        {direction}
+        <Text style={styles.amount}>{this.props.amount}</Text>
+        {destination}
+        <Text style={styles.date}>{new Date(this.props.date).toDateString()}</Text>
       </View>
     );
   }
@@ -24,8 +39,8 @@ export default class History extends Component<{}> {
       <View>
         <View style={styles.headingWrap}>
           <View style={styles.headingContainer}>
-            <Text style={styles.heading}>Amount</Text>
-            <Text style={styles.heading}>Address</Text>
+            <Text style={styles.heading}>Amount (in satoshis)</Text>
+            <Text style={styles.heading}>Destination address</Text>
             <Text style={styles.heading}>Date</Text>
           </View>
         </View>
@@ -46,9 +61,6 @@ export default class History extends Component<{}> {
 }
 
 const styles = StyleSheet.create({
-  text: {
-    color: '#000',
-  },
   panelContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -78,5 +90,15 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontWeight: 'bold',
+  },
+  date: {
+    fontSize: 10,
+  },
+  address: {
+    fontFamily: 'monospace',
+  },
+  amount: {
+    fontWeight: 'bold',
+    fontSize: 18,
   }
 });
