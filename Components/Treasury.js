@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   treasuryContainer: {
     margin: 20,
     padding: 10,
-    backgroundColor: 'rgba(255,215,0, 0.9)',
+    backgroundColor: 'rgba(255,215,0,0.8)',
     borderRadius: 10,
   },
   test: {
@@ -100,6 +100,6 @@ const styles = StyleSheet.create({
   },
   id: {
     fontSize: 10,
-    color: '#909090',
+    color: '#777',
   }
 });

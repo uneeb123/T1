@@ -4,11 +4,12 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
+
 import ReadyTreasuries from './Components/ReadyTreasuries';
 import InvitedTreasuries from './Components/InvitedTreasuries';
 import PendingTreasuries from './Components/PendingTreasuries';
-
 import Container from './Components/Container';
+import GoldenButton from './Components/GoldenButton';
 
 import TreasuryModel from './Model/TreasuryModel';
 
@@ -37,6 +38,10 @@ export default class HomeScreen extends Component<{}> {
       console.log(e);
     });
   }
+
+  _handleCreate = () => {
+    console.log("I am alive");
+  }
   
   render() {
     let ready_treasuries = [];
@@ -63,6 +68,11 @@ export default class HomeScreen extends Component<{}> {
           <Text style={styles.test}>Pending Treasuries</Text>
         </View>
         <PendingTreasuries list={pending_treasuries} />
+        <View style={{alignItems: 'center'}}>
+          <GoldenButton onPress={this._handleCreate}>
+            <Text style={styles.buttonText}>New</Text>
+          </GoldenButton>
+        </View>
       </Container>
     );
   }
@@ -75,5 +85,9 @@ const styles = StyleSheet.create({
   },
   heading: {
     margin: 20,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: 'white',
   }
 });

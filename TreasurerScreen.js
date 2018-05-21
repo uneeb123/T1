@@ -29,6 +29,10 @@ export default class TreasurerScreen extends Component<{}> {
       };
     }
   }
+
+  _handleSpend = () => {
+    console.log("I am alive");
+  }
   
   render() {
     let history = this.state.history;
@@ -39,7 +43,9 @@ export default class TreasurerScreen extends Component<{}> {
           <History list={history} />
         </View>
         <View style={styles.buttonContainer}>
-          <GoldenButton/>
+          <GoldenButton onPress={this._handleSpend}>
+            <Text style={styles.text}>Spend</Text>
+          </GoldenButton>
         </View>
       </Container>
     );
@@ -49,5 +55,9 @@ export default class TreasurerScreen extends Component<{}> {
 const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'center',
+  },
+  text: {
+    textAlign: 'center',
+    color: 'white',
   }
 });

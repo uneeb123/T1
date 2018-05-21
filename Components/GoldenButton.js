@@ -7,14 +7,11 @@ import {
 } from 'react-native';
 
 export default class GoldenButton extends Component<{}> {
-  _handle = () => {
-  }
-
   render() {
     return (
-      <TouchableOpacity style={styles.goldenButton}>
+      <TouchableOpacity style={styles.goldenButton} {...this.props}>
         <View style={{transform: [{scaleX: 1/2}]}}>
-          <Text style={styles.text}>Spend</Text>
+          {this.props.children}
         </View>
       </TouchableOpacity>
     );
@@ -24,7 +21,7 @@ export default class GoldenButton extends Component<{}> {
 const styles = StyleSheet.create({
   goldenButton: {
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,215,0,1)',
+    backgroundColor: 'rgb(255,223,0)',
     width: 100,
     height: 50,
     borderRadius: 50,
@@ -33,8 +30,4 @@ const styles = StyleSheet.create({
       {scaleX: 2}
     ]
   },
-  text: {
-    textAlign: 'center',
-    color: 'white',
-  }
 });
