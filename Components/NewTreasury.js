@@ -22,6 +22,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
  * https://github.com/facebook/react/issues/2429
  * https://stackoverflow.com/questions/35537229/how-to-update-parents-state-in-react
  *
+ */
+
 class MemberInput extends Component<{}> {
   state = {
     number: '',
