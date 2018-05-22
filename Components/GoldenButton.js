@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
-  TouchableOpacity,
+  TouchableHighlight,
   Text,
   StyleSheet,
 } from 'react-native';
@@ -9,11 +9,11 @@ import {
 export default class GoldenButton extends Component<{}> {
   render() {
     return (
-      <TouchableOpacity style={styles.goldenButton} {...this.props}>
+      <TouchableHighlight style={styles.goldenButton} {...this.props}>
         <View style={{transform: [{scaleX: 1/2}]}}>
           {this.props.children}
         </View>
-      </TouchableOpacity>
+      </TouchableHighlight>
     );
   }
 }
