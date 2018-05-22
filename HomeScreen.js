@@ -3,6 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
+  Button
 } from 'react-native';
 
 import ReadyTreasuries from './Components/ReadyTreasuries';
@@ -10,6 +11,7 @@ import InvitedTreasuries from './Components/InvitedTreasuries';
 import PendingTreasuries from './Components/PendingTreasuries';
 import Container from './Components/Container';
 import GoldenButton from './Components/GoldenButton';
+import NewTreasury from './Components/NewTreasury';
 
 import TreasuryModel from './Model/TreasuryModel';
 
@@ -23,6 +25,7 @@ export default class HomeScreen extends Component<{}> {
     ready: false,
     user: null,
     treasuries: null,
+    newDialog: false,
   };
 
   constructor() {
@@ -40,7 +43,15 @@ export default class HomeScreen extends Component<{}> {
   }
 
   _handleCreate = () => {
-    console.log("I am alive");
+    this.setState({
+      newDialog: true,
+    });
+  }
+
+  _hideModal = () => {
+    this.setState({
+      newDialog: false,
+    });
   }
   
   render() {
@@ -53,6 +64,7 @@ export default class HomeScreen extends Component<{}> {
       invited_treasuries = this.state.treasuries.invited_treasuries;
       pending_treasuries = this.state.treasuries.pending_treasuries;
     }
+    let showNewDialog = this.state.newDialog;
 
     return (
       <Container>
@@ -73,6 +85,9 @@ export default class HomeScreen extends Component<{}> {
             <Text style={styles.buttonText}>New</Text>
           </GoldenButton>
         </View>
+        <NewTreasury isVisible={showNewDialog} onBackdropPress={this._hideModal}>
+          <Button title='Hide' onPress={this._hideModal} />
+        </NewTreasury>
       </Container>
     );
   }
