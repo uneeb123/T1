@@ -100,14 +100,28 @@ class MemberInviteContainer extends Component<{}> {
     console.log(this.key);
   }
 
+  _renderAddButton = () => {
+    if (this.props.addHandler) {
+      return (<Icon.Button backgroundColor='#FFF' name="plus" size={30} color='#66CD00' onPress={this.props.addHandler} />);
+    }
+    return null;
+  }
+
+  _renderRemoveButton = () => {
+    if (this.props.removeHandler) {
+      return (<Icon.Button backgroundColor='#FFF' name="minus" size={30} color='red' onPress={this.props.removeHandler} />);
+    }
+    return null;
+  }
+
   render() {
     return (
       <View style={styles.memberInviteContainer}>
         <Icon name="phone" size={30} color='#38B0DE' />
         <MemberInput />
         <Icon.Button backgroundColor='#FFF' name="key" size={30} color='#CCCCCC' onPress={this._handleTreasurer} />
-        <Icon.Button backgroundColor='#FFF' name="plus" size={30} color='#66CD00' />
-        <Icon.Button backgroundColor='#FFF' name="minus" size={30} color='red' />
+        {this._renderAddButton()}
+        {this._renderRemoveButton()}
       </View>
     );
   }
@@ -118,20 +132,71 @@ export default class NewTreasury extends Component<{}> {
   state = {
     amount: '',
     cadence: '1',
-    inviteCount: 1,
+    inviteCount: 0,
+    treasuruerIndex: 0,
     numbers: [],
-    currentInvites: [<MemberInviteContainer key={'1'} />, <MemberInviteContainer key={'2'} />],
+    currentInvites: [],
   };
 
   constructor(props) {
     super(props);
   }
 
-  _appendInvite = () => {
+  componentDidMount() {
+    this._createFirstInvite();
+  }
+
+  _createFirstInvite = () => {
+    let firstAddHandler = this._addInvite.bind(this);
+    let inviteElement = (<MemberInviteContainer key={'0'} addHandler={firstAddHandler} removeHandler={null} />);
+    this.setState({
+      currentInvites: [inviteElement],
+      inviteCount: 1,
+    });
+  }
+
+  _removeInvite = () => {
+    // first simply remove the last element
     let updatedInvites = this.state.currentInvites;
-    updatedInvites.push(<MemberInviteContainer />);
+    updatedInvites.pop();
+
+    // then update the new last element
+    let newInviteCount = this.state.inviteCount - 1;
+    let lastIndex = newInviteCount - 1;
+    let newLastElementInvite = updatedInvites.pop();
+    let newAddHandler = this._addInvite.bind(this);
+    if (lastIndex == 0) {
+      newLastElementInvite = (<MemberInviteContainer key={lastIndex.toString()} addHandler={newAddHandler} removeHandler={null} />);
+    } else {
+      let newRemoveHandler = this._removeInvite.bind(this);
+      newLastElementInvite = (<MemberInviteContainer key={lastIndex.toString()} addHandler={newAddHandler} removeHandler={newRemoveHandler} />);
+    }
+    updatedInvites.push(newLastElementInvite);
     this.setState({
       currentInvites: updatedInvites,
+      inviteCount: newInviteCount,
+    });
+  }
+
+  _addInvite = () => {
+    let updatedInvites = this.state.currentInvites;
+    
+    // first remove the last element and update it and push it back
+    let lastIndex = this.state.inviteCount - 1;
+    let lastInviteElement = updatedInvites.pop();
+    lastInviteElement = (<MemberInviteContainer key={lastIndex.toString()} addHandler={null} removeHandler={null} />);
+    updatedInvites.push(lastInviteElement);
+
+    // then add the new element
+    let newIndex = this.state.inviteCount;
+    let newAddHandler = this._addInvite.bind(this);
+    let lastRemoveHandler = this._removeInvite.bind(this);
+    let newInviteElement = (<MemberInviteContainer key={newIndex.toString()} addHandler={newAddHandler} removeHandler={lastRemoveHandler}/>);
+    updatedInvites.push(newInviteElement);
+    let newInviteCount = this.state.inviteCount + 1;
+    this.setState({
+      currentInvites: updatedInvites,
+      inviteCount: newInviteCount,
     });
   }
 
@@ -185,7 +250,7 @@ export default class NewTreasury extends Component<{}> {
               <Text style={{marginLeft: 5, marginRight: 5}}>{'/'}</Text>
               <Picker
                 selectedValue={this.state.cadence}
-                style={{ height: 50, width: 50 }}
+                style={{ height: 50, width: 70 }}
                 onValueChange={(itemValue, itemIndex) => this.setState({cadence: itemValue})}>
                 <Picker.Item label="1" value="1" />
                 <Picker.Item label="2" value="2" />
