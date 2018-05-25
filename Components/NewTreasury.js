@@ -15,13 +15,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 /*
  * TODO
- *
- * Pass the parent handler to the child component.
- * Use indexing to retreive the correct element
- *
- * https://github.com/facebook/react/issues/2429
- * https://stackoverflow.com/questions/35537229/how-to-update-parents-state-in-react
- *
+ * break down the components and
+ * use redux for state management
  */
 
 class MemberInput extends Component<{}> {
@@ -41,7 +36,9 @@ class MemberInput extends Component<{}> {
     this.setState({ country });
   }
 
-  _onChangeText = () => {}
+  _onChangeText = (number) => {
+    this.props.numberHandler(number);
+  }
 
   _renderCountryPicker = () => {
     return (
@@ -75,7 +72,7 @@ class MemberInput extends Component<{}> {
         placeholderTextColor={'#AAA'}
         keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
         keyboardAppearance={'dark'}
-        style={styles.textInput}
+        style={styles.numberTextInput}
         returnKeyType='go'
         selectionColor={'#AAA'}
         maxLength={20}
@@ -96,32 +93,61 @@ class MemberInput extends Component<{}> {
 }
 
 class MemberInviteContainer extends Component<{}> {
+  state = {
+    treasurer: false,
+  }
+
+  constructor(props) {
+    super(props);
+    if (this.props.treasurer) {
+      this.state.treasurer = true;
+    }
+  }
+
+  unsetTreasurer() {
+    this.setState({
+      treasurer: false,
+    });
+  }
+
   _handleTreasurer = () => {
-    console.log(this.key);
+    this.setState({
+      treasurer: true,
+    });
+    this.props.treasurerHandler();
   }
 
   _renderAddButton = () => {
-    if (this.props.addHandler) {
-      return (<Icon.Button backgroundColor='#FFF' name="plus" size={30} color='#66CD00' onPress={this.props.addHandler} />);
-    }
-    return null;
+    return (<Icon.Button backgroundColor='#FFF' name="plus" size={30} color='#66CD00' onPress={this.props.addHandler} />);
   }
 
   _renderRemoveButton = () => {
-    if (this.props.removeHandler) {
+    if (!this.props.first) {
       return (<Icon.Button backgroundColor='#FFF' name="minus" size={30} color='red' onPress={this.props.removeHandler} />);
     }
     return null;
   }
 
+  _renderTreasurer = (treasurer) => {
+    if (treasurer) {
+      return (<Icon.Button backgroundColor='#FFF' name="key" size={30} color='#808000' onPress={this._handleTreasurer} />);
+    } else {
+      return (<Icon.Button backgroundColor='#FFF' name="key" size={30} color='#CCCCCC' onPress={this._handleTreasurer} />);
+    }
+  }
+
   render() {
+    let treasurer = this.state.treasurer;
+
     return (
-      <View style={styles.memberInviteContainer}>
-        <Icon name="phone" size={30} color='#38B0DE' />
-        <MemberInput />
-        <Icon.Button backgroundColor='#FFF' name="key" size={30} color='#CCCCCC' onPress={this._handleTreasurer} />
-        {this._renderAddButton()}
-        {this._renderRemoveButton()}
+      <View style={styles.memberInviteWrap}>
+        <View style={styles.memberInviteContainer}>
+          <Icon name="phone" size={30} color='#38B0DE' />
+          <MemberInput numberHandler={this.props.numberHandler} />
+          {this._renderTreasurer(treasurer)}
+          {this._renderAddButton()}
+          {this._renderRemoveButton()}
+        </View>
       </View>
     );
   }
@@ -132,72 +158,67 @@ export default class NewTreasury extends Component<{}> {
   state = {
     amount: '',
     cadence: '1',
-    inviteCount: 0,
-    treasuruerIndex: 0,
-    numbers: [],
-    currentInvites: [],
+    inviteCount: 1,
+    treasurer: 0,
+    numbers: {},
   };
 
   constructor(props) {
     super(props);
   }
 
-  componentDidMount() {
-    this._createFirstInvite();
+  _generateInvites = () => {
+    this.inviteRefs = [];
+    let allInvites = [];
+    let count = this.state.inviteCount;
+    for (index = 0; index < count; index++) {
+      let key = index.toString();
+      let first = false;
+      let isTreasurer = false;
+      if (index == 0) {
+        first = true;
+      }
+      if (index == this.state.treasurer) {
+        isTreasurer = true;
+      }
+      let addHandler = this._addInvite.bind(this);
+      let removeHandler = this._removeInvite.bind(this);
+      let treasurerHandler = this._changeTreasurer.bind(this, key);
+      let numberHandler = null // for now
+      let element = (<MemberInviteContainer
+        key={key}
+        first={first}
+        treasurer={isTreasurer}
+        addHandler={addHandler}
+        removeHandler={removeHandler}
+        treasurerHandler={treasurerHandler}
+        numberHandler={numberHandler}/>);
+      allInvites.push(element);
+    }
+    return allInvites;
   }
 
-  _createFirstInvite = () => {
-    let firstAddHandler = this._addInvite.bind(this);
-    let inviteElement = (<MemberInviteContainer key={'0'} addHandler={firstAddHandler} removeHandler={null} />);
+  _addInvite = () => {
+    let inviteCount = this.state.inviteCount;
     this.setState({
-      currentInvites: [inviteElement],
-      inviteCount: 1,
+      inviteCount: inviteCount + 1,
     });
   }
 
   _removeInvite = () => {
-    // first simply remove the last element
-    let updatedInvites = this.state.currentInvites;
-    updatedInvites.pop();
-
-    // then update the new last element
-    let newInviteCount = this.state.inviteCount - 1;
-    let lastIndex = newInviteCount - 1;
-    let newLastElementInvite = updatedInvites.pop();
-    let newAddHandler = this._addInvite.bind(this);
-    if (lastIndex == 0) {
-      newLastElementInvite = (<MemberInviteContainer key={lastIndex.toString()} addHandler={newAddHandler} removeHandler={null} />);
-    } else {
-      let newRemoveHandler = this._removeInvite.bind(this);
-      newLastElementInvite = (<MemberInviteContainer key={lastIndex.toString()} addHandler={newAddHandler} removeHandler={newRemoveHandler} />);
-    }
-    updatedInvites.push(newLastElementInvite);
+    let inviteCount = this.state.inviteCount;
     this.setState({
-      currentInvites: updatedInvites,
-      inviteCount: newInviteCount,
+      inviteCount: inviteCount - 1,
     });
   }
-
-  _addInvite = () => {
-    let updatedInvites = this.state.currentInvites;
-    
-    // first remove the last element and update it and push it back
-    let lastIndex = this.state.inviteCount - 1;
-    let lastInviteElement = updatedInvites.pop();
-    lastInviteElement = (<MemberInviteContainer key={lastIndex.toString()} addHandler={null} removeHandler={null} />);
-    updatedInvites.push(lastInviteElement);
-
-    // then add the new element
-    let newIndex = this.state.inviteCount;
-    let newAddHandler = this._addInvite.bind(this);
-    let lastRemoveHandler = this._removeInvite.bind(this);
-    let newInviteElement = (<MemberInviteContainer key={newIndex.toString()} addHandler={newAddHandler} removeHandler={lastRemoveHandler}/>);
-    updatedInvites.push(newInviteElement);
-    let newInviteCount = this.state.inviteCount + 1;
+  
+  _changeTreasurer = (newTreasurer) => {
+    let previousTreasurer = this.state.treasurer;
+    console.log(this.refs);
     this.setState({
-      currentInvites: updatedInvites,
-      inviteCount: newInviteCount,
+      treasurer: newTreasurer,
     });
+    this.forceUpdate();
   }
 
   _onChangeAmount = (newAmount) => {
@@ -223,7 +244,7 @@ export default class NewTreasury extends Component<{}> {
         placeholder={'Limit'}
         placeholderTextColor={'#AAA'}
         keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
-        style={styles.textInput}
+        style={styles.amountTextInput}
         returnKeyType='go'
         selectionColor={'#AAA'}
         maxLength={10} />
@@ -231,17 +252,19 @@ export default class NewTreasury extends Component<{}> {
   }
 
   render() {
-    let invites = this.state.currentInvites;
-
     return (
       <Modal {...this.props}>
         <View style={styles.modalContainer}>
           <View style={styles.contentWrap}>
-            <Text style={styles.inviteTitle}>Invite members</Text>
-            <View style={{height: 150, width: 200}}>
-              {invites}
+            <View style={styles.inviteTitleContainer}>
+              <Text style={styles.inviteTitle}>Invite members</Text>
             </View>
-            <Text style={styles.cadenceTitle}>Cadence</Text>
+            <View>
+              {this._generateInvites()}
+            </View>
+            <View style={styles.cadenceTitleContainer}>
+              <Text style={styles.cadenceTitle}>Cadence</Text>
+            </View>
             <View style={styles.cadenceContainer}>
               <Text style={{marginRight: 5}}>satoshis</Text>
               <View style={styles.cadenceInputContainer}>
@@ -292,11 +315,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingRight: 10
   },
-  textInput: {
+  numberTextInput: {
     padding: 0,
     margin: 0,
-    flex: 1,
-    fontSize: 16,
+    width: 100,
+  },
+  amountTextInput: {
   },
   memberInputContainer: {
     marginLeft: 5,
@@ -312,6 +336,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 10,
   },
+  memberInviteWrap: {
+    height: 50,
+  },
   cadenceTitle: {
     textAlign: 'center',
     fontSize: 20,
@@ -326,10 +353,16 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   cadenceInputContainer: {
-    height: 30,
+    height: 50,
     width: 100,
     padding: 2,
     borderWidth: 1,
     borderRadius: 5,
-  }
+  },
+  cadenceTitleContainer: {
+    margin: 10,
+  },
+  inviteTitleContainer: {
+    margin: 10,
+  },
 });
