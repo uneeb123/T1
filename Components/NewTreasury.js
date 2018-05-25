@@ -93,14 +93,18 @@ class MemberInput extends Component<{}> {
 }
 
 class MemberInviteContainer extends Component<{}> {
-  state = {
-    treasurer: false,
-  }
-
   constructor(props) {
     super(props);
-    if (this.props.treasurer) {
-      this.state.treasurer = true;
+    this.state = {
+      treasurer: this.props.treasurer,
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.treasurer != null) {
+      this.setState({
+        treasurer: nextProps.treasurer,
+      });
     }
   }
 
@@ -168,7 +172,6 @@ export default class NewTreasury extends Component<{}> {
   }
 
   _generateInvites = () => {
-    this.inviteRefs = [];
     let allInvites = [];
     let count = this.state.inviteCount;
     for (index = 0; index < count; index++) {
@@ -214,11 +217,9 @@ export default class NewTreasury extends Component<{}> {
   
   _changeTreasurer = (newTreasurer) => {
     let previousTreasurer = this.state.treasurer;
-    console.log(this.refs);
     this.setState({
       treasurer: newTreasurer,
     });
-    this.forceUpdate();
   }
 
   _onChangeAmount = (newAmount) => {
