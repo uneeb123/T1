@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Picker,
   Platform,
+  TouchableHighlight,
   Button,
 } from 'react-native';
 import Modal from "react-native-modal";
@@ -26,10 +27,6 @@ class MemberInput extends Component<{}> {
       cca2: 'US',
       callingCode: '1',
     }
-  }
-
-  _getSubmitAction = () => {
-    console.log("submitted action");
   }
 
   _changeCountry = (country) => {
@@ -75,8 +72,7 @@ class MemberInput extends Component<{}> {
         style={styles.numberTextInput}
         returnKeyType='go'
         selectionColor={'#AAA'}
-        maxLength={20}
-        onSubmitEditing={this._getSubmitAction} />
+        maxLength={20} />
     );
   }
 
@@ -97,20 +93,14 @@ class MemberInviteContainer extends Component<{}> {
     super(props);
     this.state = {
       treasurer: this.props.treasurer,
+      last: this.props.last,
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.treasurer != null) {
-      this.setState({
-        treasurer: nextProps.treasurer,
-      });
-    }
-  }
-
-  unsetTreasurer() {
     this.setState({
-      treasurer: false,
+      treasurer: nextProps.treasurer,
+      last: nextProps.last,
     });
   }
 
@@ -142,6 +132,7 @@ class MemberInviteContainer extends Component<{}> {
 
   render() {
     let treasurer = this.state.treasurer;
+    let last = this.state.last;
 
     return (
       <View style={styles.memberInviteWrap}>
@@ -149,8 +140,8 @@ class MemberInviteContainer extends Component<{}> {
           <Icon name="phone" size={30} color='#38B0DE' />
           <MemberInput numberHandler={this.props.numberHandler} />
           {this._renderTreasurer(treasurer)}
-          {this._renderAddButton()}
-          {this._renderRemoveButton()}
+          {last? this._renderAddButton(): null}
+          {last? this._renderRemoveButton(): null}
         </View>
       </View>
     );
@@ -177,9 +168,13 @@ export default class NewTreasury extends Component<{}> {
     for (index = 0; index < count; index++) {
       let key = index.toString();
       let first = false;
+      let last = false;
       let isTreasurer = false;
       if (index == 0) {
         first = true;
+      }
+      if (index == count-1) {
+        last = true;
       }
       if (index == this.state.treasurer) {
         isTreasurer = true;
@@ -187,10 +182,11 @@ export default class NewTreasury extends Component<{}> {
       let addHandler = this._addInvite.bind(this);
       let removeHandler = this._removeInvite.bind(this);
       let treasurerHandler = this._changeTreasurer.bind(this, key);
-      let numberHandler = null // for now
+      let numberHandler = this._onChangeNumber.bind(this, key); 
       let element = (<MemberInviteContainer
         key={key}
         first={first}
+        last={last}
         treasurer={isTreasurer}
         addHandler={addHandler}
         removeHandler={removeHandler}
@@ -199,6 +195,14 @@ export default class NewTreasury extends Component<{}> {
       allInvites.push(element);
     }
     return allInvites;
+  }
+
+  _onChangeNumber = (key, phoneNumber) => {
+    let updatedNumbers = this.state.numbers;
+    updatedNumbers[key] = phoneNumber;
+    this.setState({
+      numbers: updatedNumbers,
+    });
   }
 
   _addInvite = () => {
@@ -210,8 +214,13 @@ export default class NewTreasury extends Component<{}> {
 
   _removeInvite = () => {
     let inviteCount = this.state.inviteCount;
+    let treasurer = this.state.treasurer;
+    if (treasurer == inviteCount - 1) {
+      treasurer = 0;
+    }
     this.setState({
       inviteCount: inviteCount - 1,
+      treasurer: treasurer,
     });
   }
   
@@ -229,8 +238,14 @@ export default class NewTreasury extends Component<{}> {
   }
 
   _submitNewTreasury = () => {
-    console.log(this.state.amount);
-    console.log(this.state.cadence);
+    let numbers = this.state.numbers;
+    let treasurerIndex = this.state.treasurer;
+    let treasurerNumber = numbers[treasurerIndex];
+    delete numbers[treasurerIndex];
+    let memberPhoneNumbers = Object.values(numbers);
+    let amount = this.state.amount;
+    let cadence = this.state.cadence;
+    this.props.handleSubmit(treasurerNumber, memberPhoneNumbers, amount, cadence);
   }
 
   _renderInputText = () => {
@@ -252,6 +267,9 @@ export default class NewTreasury extends Component<{}> {
     );
   }
 
+  /*
+   * TODO support more options for cadence
+   */
   render() {
     return (
       <Modal {...this.props}>
@@ -267,7 +285,7 @@ export default class NewTreasury extends Component<{}> {
               <Text style={styles.cadenceTitle}>Cadence</Text>
             </View>
             <View style={styles.cadenceContainer}>
-              <Text style={{marginRight: 5}}>satoshis</Text>
+              <Text style={{marginRight: 20, marginLeft: 20}}>mBTC</Text>
               <View style={styles.cadenceInputContainer}>
                 {this._renderInputText()}
               </View>
@@ -277,18 +295,23 @@ export default class NewTreasury extends Component<{}> {
                 style={{ height: 50, width: 70 }}
                 onValueChange={(itemValue, itemIndex) => this.setState({cadence: itemValue})}>
                 <Picker.Item label="1" value="1" />
-                <Picker.Item label="2" value="2" />
-                <Picker.Item label="3" value="3" />
-                <Picker.Item label="4" value="4" />
-                <Picker.Item label="5" value="5" />
-                <Picker.Item label="6" value="6" />
-                <Picker.Item label="7" value="7" />
               </Picker>
               <Text>{' days '}</Text>
             </View>
           </View>
-          <Button title={'submit'} onPress={this._submitNewTreasury}/>
           {this.props.children}
+          <View style={styles.buttonContainer}>
+            <TouchableHighlight style={styles.button} onPress={this._submitNewTreasury}>
+              <View style={{transform: [{scaleX: 1/2}]}}>
+                <Text style={styles.buttonText}>Submit</Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight style={styles.button} onPress={this.props.handleCancel}>
+              <View style={{transform: [{scaleX: 1/2}]}}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </View>
+            </TouchableHighlight>
+          </View>
         </View>
       </Modal>
     );
@@ -366,4 +389,22 @@ const styles = StyleSheet.create({
   inviteTitleContainer: {
     margin: 10,
   },
+  button: {
+    justifyContent: 'center',
+    backgroundColor: '#0EBFE9',
+    width: 50,
+    height: 25,
+    borderRadius: 50,
+    margin: 20,
+    transform: [
+      {scaleX: 2}
+    ]
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
+  },
+  buttonText: {
+    color: 'white',
+  }
 });

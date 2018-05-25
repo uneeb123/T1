@@ -42,16 +42,22 @@ export default class HomeScreen extends Component<{}> {
     });
   }
 
-  _handleCreate = () => {
+  _showCreate = () => {
     this.setState({
       newDialog: true,
     });
   }
 
-  _hideModal = () => {
+  _cancelCreate = () => {
     this.setState({
       newDialog: false,
     });
+  }
+
+  _submitCreate = (treasurer, members, amount, cadence) => {
+    console.log(treasurer);
+    console.log(members);
+    console.log(amount);
   }
   
   render() {
@@ -81,13 +87,16 @@ export default class HomeScreen extends Component<{}> {
         </View>
         <PendingTreasuries list={pending_treasuries} />
         <View style={{alignItems: 'center'}}>
-          <GoldenButton onPress={this._handleCreate}>
+          <GoldenButton onPress={this._showCreate}>
             <Text style={styles.buttonText}>New</Text>
           </GoldenButton>
         </View>
-        <NewTreasury isVisible={showNewDialog} onBackdropPress={this._hideModal}>
-          <Button title='Hide' onPress={this._hideModal} />
-        </NewTreasury>
+        <NewTreasury
+          isVisible={showNewDialog}
+          onBackdropPress={this._cancelCreate}
+          handleCancel={this._cancelCreate}
+          handleSubmit={this._submitCreate}
+          avoidKeyboard={true} />
       </Container>
     );
   }
