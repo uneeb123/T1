@@ -41,7 +41,7 @@ export default class SplashScreen extends Component<{}> {
     const { navigate } = this.props.navigation;
     this.model.userSaved().then((saved) => {
       if (saved) {
-        navigate('Home');
+        navigate('Loading');
       } else {
         navigate('Phone');
       }

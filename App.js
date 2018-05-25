@@ -3,6 +3,7 @@ import SplashScreen from './SplashScreen';
 import HomeScreen from './HomeScreen';
 import MemberScreen from './MemberScreen';
 import TreasurerScreen from './TreasurerScreen';
+import LoadingScreen from './LoadingScreen';
 
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -17,6 +18,7 @@ const StackNav = StackNavigator(
     Splash: { screen: SplashScreen },
     Phone: { screen: PhoneNumberScreen },
     Home: { screen: HomeScreen },
+    Loading: { screen: LoadingScreen },
     Member: { screen: MemberScreen },
     Treasurer: { screen: TreasurerScreen }
   },

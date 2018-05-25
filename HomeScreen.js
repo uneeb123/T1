@@ -28,17 +28,12 @@ export default class HomeScreen extends Component<{}> {
     newDialog: false,
   };
 
-  constructor() {
-    super();
-    this.model = new TreasuryModel();
-    this.model.getDetailedInformation().then((details) => {
-      this.setState({
-        ready: true,
-        user: details.user,
-        treasuries: details.treasuries,
-      });
-    }, (e) => {
-      console.log(e);
+  componentWillMount() {
+    const { params } = this.props.navigation.state;
+    this.setState({
+      ready: true,
+      user: params.user,
+      treasuries: params.treasuries,
     });
   }
 
