@@ -32,7 +32,7 @@ export default class SplashScreen extends Component<{}> {
   }
 
   _removeThis() {
-    AsyncStorage.setItem('userId', 'ecdc8326-27ca-471a-9f4c-60c1fdd82e46', () => {
+    AsyncStorage.setItem('userId', '05bb8602-5a92-4ff5-907e-fcf9aad98cc0', () => {
       this._fetchNumber();
     });
   }

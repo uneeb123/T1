@@ -4,56 +4,60 @@ import {
   FlatList,
   Text,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 class Panel extends Component<{}> {
+  _mBTC (satoshis) {
+    return (Math.abs(satoshis)/100000).toFixed(2);
+  }
+
   render() {
     let positive = (<Icon name="chevron-up" size={30} color='green' />);
     let negative = (<Icon name="chevron-down" size={30} color='red' />);
     let direction = positive;
-    if (this.props.amount < 0) {
+    if (this.props.item.amount < 0) {
       direction = negative;
     }
 
-    let destination = (<Text style={styles.address}>{this.props.address}</Text>);
-    if (this.props.address == 0) {
-      destination = (<Text>--</Text>);
-    }
+    let amount = this._mBTC(this.props.item.amount);
+    let date = new Date(this.props.item.timestamp);
 
     return (
-      <View style={styles.panelContainer}>
-        {direction}
-        <Text style={styles.amount}>{this.props.amount}</Text>
-        {destination}
-        <Text style={styles.date}>{new Date(this.props.date).toDateString()}</Text>
-      </View>
+      <TouchableOpacity onPress={()=>{console.log("not implemented")}} style={styles.panelContainer}>
+        <View style={styles.directionContainer}>
+          {direction}
+        </View>
+        <View style={styles.amountContainer}>
+          <Text style={styles.amount}>{amount}</Text>
+        </View>
+        <View style={styles.labelContainer}>
+          <Text>mBTC</Text>
+        </View>
+        <View style={styles.dateContainer}>
+          <Text style={styles.date}>{date.toLocaleDateString('en-US')}</Text>
+          <Text style={styles.date}>{date.toLocaleTimeString('en-US')}</Text>
+        </View>
+      </TouchableOpacity>
     );
   }
 }
 
 export default class History extends Component<{}> {
   render() {
+    console.log(this.props.list);
     return (
-      <View>
-        <View style={styles.headingWrap}>
-          <View style={styles.headingContainer}>
-            <Text style={styles.heading}>Amount (in satoshis)</Text>
-            <Text style={styles.heading}>Destination address</Text>
-            <Text style={styles.heading}>Date</Text>
-          </View>
-        </View>
-        <View style={styles.panelsWrap}>
-          <View style={styles.panelsContainer}>
-            <FlatList
-              data={this.props.list}
-              renderItem={({item}) => 
-                <Panel amount={item.amount} address={item.to_address} date={item.created_on}/>
-              }
-              keyExtractor={(item, index) => index.toString()}
-            />
-          </View>
+      <View style={styles.panelsWrap}>
+        <View style={styles.panelsContainer}>
+          <FlatList
+            data={this.props.list}
+            renderItem={({item}) => 
+              <Panel item={item} />
+            }
+            keyExtractor={(item, index) => index.toString()}
+          />
         </View>
       </View>
     );
@@ -62,34 +66,21 @@ export default class History extends Component<{}> {
 
 const styles = StyleSheet.create({
   panelContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    padding: 15,
+    borderBottomColor: '#fff',
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   panelsContainer: {
     backgroundColor: 'rgba(255,255,255,0.8)',
     margin: 10,
-    padding: 10,
   },
   panelsWrap: {
     backgroundColor: 'rgba(255,215,0, 0.5)',
     borderRadius: 10,
     margin: 15,
-  },
-  headingWrap: {
-    backgroundColor: 'rgba(255,215,0, 0.9)',
-    borderRadius: 10,
-    margin: 15,
-  },
-  headingContainer: {
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    margin: 5,
-    padding: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  heading: {
-    fontWeight: 'bold',
   },
   date: {
     fontSize: 10,
@@ -99,5 +90,18 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: 18,
+    textAlign: 'right',
+  },
+  directionContainer: {
+    justifyContent: 'center',
+  },
+  amountContainer: {
+    justifyContent: 'center',
+  },
+  labelContainer: {
+    justifyContent: 'center',
+  },
+  dateContainer: {
+    flexDirection: 'column',
   }
 });

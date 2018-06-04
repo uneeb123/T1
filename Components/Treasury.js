@@ -10,6 +10,8 @@ import { withNavigation } from 'react-navigation';
 
 import TreasuryModel from '../Model/TreasuryModel';
 
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 class Treasury extends Component<{}> {
   state = {
     creator: null,
@@ -74,12 +76,24 @@ class Treasury extends Component<{}> {
     }
   }
 
+  _light() {
+    if (this.invited) {
+      return (<Icon name="circle" size={10} style={styles.greenLight} color='yellow' />);
+    } else if (this.pending) {
+      return (<Icon name="circle" size={10} style={styles.greenLight} color='red' />);
+    } else if (this.ready) {
+      return (<Icon name="circle" size={10} style={styles.greenLight} color='#99c140' />);
+    } else {
+      return null;
+    }
+  }
+
   render() {
     let creator = this.state.creator;
 
     return (
       <TouchableOpacity onPress={this._handleEvent} style={styles.treasuryContainer}>
-        <Text style={styles.id}>{this.props.treasury._id}</Text>
+        {this._light()}
         <Text style={styles.test}>created by: {creator}</Text>
       </TouchableOpacity>
     );
@@ -90,10 +104,20 @@ export default withNavigation(Treasury);
 
 const styles = StyleSheet.create({
   treasuryContainer: {
+    flexDirection: 'row',
     margin: 20,
     padding: 10,
     backgroundColor: 'rgba(255,215,0,0.8)',
     borderRadius: 10,
+  },
+  greenLight: {
+    margin: 5,
+    shadowColor: '#FFF',
+    shadowOffset: {
+      width: 1,
+      height: 2,
+    },
+    shadowOpacity: 0.7
   },
   test: {
     color: '#FFF',
