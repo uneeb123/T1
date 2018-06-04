@@ -80,7 +80,7 @@ class Treasury extends Component<{}> {
   _light() {
     if (this.invited) {
       return (
-        <Animatable.View animation="flash" iterationCount="infinite" easing="ease-out" iterationDelay={500} style={styles.statusLight}>
+        <Animatable.View animation="flash" iterationCount="infinite" easing="ease-in" iterationDelay={500} style={styles.statusLight}>
           <Icon name="circle" size={10} color='red'/>
         </Animatable.View>
       );
