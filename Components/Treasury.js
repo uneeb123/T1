@@ -87,7 +87,7 @@ class Treasury extends Component<{}> {
     } else if (this.pending) {
       return (<Icon name="circle" size={10} color='red' style={styles.statusLight} />);
     } else if (this.ready) {
-      return (<Icon name="circle" size={10} color='#99c140' style={styles.statusLight} />);
+      return (<Icon name="circle" size={10} color='green' style={styles.statusLight} />);
     } else {
       return null;
     }
@@ -95,11 +95,19 @@ class Treasury extends Component<{}> {
 
   render() {
     let creator = this.state.creator;
+    let balance = this.props.treasury.balance;
+    let limit = this.props.treasury.spending_limit;
+    let memberLength = this.props.treasury.members.length;
 
     return (
       <TouchableOpacity onPress={this._handleEvent} style={styles.treasuryContainer}>
         {this._light()}
-        <Text style={styles.test}>created by: {creator}</Text>
+        <View style={styles.treasuryInformation}>
+        <Text style={styles.test}>owner: {creator}</Text>
+        <Text style={styles.test}>balance: {balance}</Text>
+        <Text style={styles.test}>limit: {limit}</Text>
+        <Text style={styles.test}>member count: {memberLength}</Text>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -120,9 +128,11 @@ const styles = StyleSheet.create({
   statusLight: {
     flex: 1,
   },
+  treasuryInformation: {
+    flex: 9,
+  },
   test: {
     color: '#FFF',
-    flex: 9,
   },
   id: {
     fontSize: 10,
