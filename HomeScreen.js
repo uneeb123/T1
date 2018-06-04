@@ -6,9 +6,7 @@ import {
   Button
 } from 'react-native';
 
-import ReadyTreasuries from './Components/ReadyTreasuries';
-import InvitedTreasuries from './Components/InvitedTreasuries';
-import PendingTreasuries from './Components/PendingTreasuries';
+import Treasuries from './Components/Treasuries';
 import Container from './Components/Container';
 import GoldenButton from './Components/GoldenButton';
 import NewTreasury from './Components/NewTreasury';
@@ -69,9 +67,10 @@ export default class HomeScreen extends Component<{}> {
 
     return (
       <Container>
-        <ReadyTreasuries list={ready_treasuries} />
-        <InvitedTreasuries list={invited_treasuries} />
-        <PendingTreasuries list={pending_treasuries} />
+        <Treasuries
+          ready={ready_treasuries}
+          invited={invited_treasuries}
+          pending={pending_treasuries} />
         <View style={{alignItems: 'center'}}>
           <GoldenButton onPress={this._showCreate}>
             <Text style={styles.buttonText}>New</Text>
