@@ -69,17 +69,8 @@ export default class HomeScreen extends Component<{}> {
 
     return (
       <Container>
-        <View style={styles.heading}>
-          <Text style={styles.test}>Ready Treasuries</Text>
-        </View>
         <ReadyTreasuries list={ready_treasuries} />
-        <View style={styles.heading}>
-          <Text style={styles.test}>Invited Treasuries</Text>
-        </View>
         <InvitedTreasuries list={invited_treasuries} />
-        <View style={styles.heading}>
-          <Text style={styles.test}>Pending Treasuries</Text>
-        </View>
         <PendingTreasuries list={pending_treasuries} />
         <View style={{alignItems: 'center'}}>
           <GoldenButton onPress={this._showCreate}>
@@ -98,13 +89,6 @@ export default class HomeScreen extends Component<{}> {
 }
 
 const styles = StyleSheet.create({
-  test: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  heading: {
-    margin: 20,
-  },
   buttonText: {
     textAlign: 'center',
     color: 'white',

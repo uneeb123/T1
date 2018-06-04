@@ -11,6 +11,7 @@ import { withNavigation } from 'react-navigation';
 import TreasuryModel from '../Model/TreasuryModel';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import * as Animatable from 'react-native-animatable';
 
 class Treasury extends Component<{}> {
   state = {
@@ -78,11 +79,15 @@ class Treasury extends Component<{}> {
 
   _light() {
     if (this.invited) {
-      return (<Icon name="circle" size={10} style={styles.greenLight} color='yellow' />);
+      return (
+        <Animatable.View animation="flash" iterationCount="infinite" easing="ease-out" iterationDelay={500} style={styles.statusLight}>
+          <Icon name="circle" size={10} color='red'/>
+        </Animatable.View>
+      );
     } else if (this.pending) {
-      return (<Icon name="circle" size={10} style={styles.greenLight} color='red' />);
+      return (<Icon name="circle" size={10} color='red' style={styles.statusLight} />);
     } else if (this.ready) {
-      return (<Icon name="circle" size={10} style={styles.greenLight} color='#99c140' />);
+      return (<Icon name="circle" size={10} color='#99c140' style={styles.statusLight} />);
     } else {
       return null;
     }
@@ -104,23 +109,20 @@ export default withNavigation(Treasury);
 
 const styles = StyleSheet.create({
   treasuryContainer: {
+    flex: 1,
     flexDirection: 'row',
+    alignItems: 'center',
     margin: 20,
     padding: 10,
     backgroundColor: 'rgba(255,215,0,0.8)',
     borderRadius: 10,
   },
-  greenLight: {
-    margin: 5,
-    shadowColor: '#FFF',
-    shadowOffset: {
-      width: 1,
-      height: 2,
-    },
-    shadowOpacity: 0.7
+  statusLight: {
+    flex: 1,
   },
   test: {
     color: '#FFF',
+    flex: 9,
   },
   id: {
     fontSize: 10,

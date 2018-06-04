@@ -47,7 +47,6 @@ class Panel extends Component<{}> {
 
 export default class History extends Component<{}> {
   render() {
-    console.log(this.props.list);
     return (
       <View style={styles.panelsWrap}>
         <View style={styles.panelsContainer}>
