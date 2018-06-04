@@ -1,6 +1,6 @@
-# Treasury client
+# Client
 
-Treasury client is a mobile application that is a special form of Bitcoin wallet.
+Client is a mobile application that is a special form of Bitcoin wallet.
 
 The frontend of the client application is built using React Native. The backend of the client is written in Java.
 For that reason, currently treasury is only supported on Android devices. We are working on providing an alternative
